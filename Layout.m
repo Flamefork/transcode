@@ -20,11 +20,10 @@
 	
     int i;
 	for (i = 0; i < (sizeof(modifierKeyStates) / sizeof(UInt32)); i++) {
-		KeyDiscriminant *discriminant = [[KeyDiscriminant alloc] init];
-		discriminant->modifierKeyState = modifierKeyStates[i];
-		
 		UInt16 keyCode;
-		for (keyCode = 0; keyCode < 127; keyCode++) {
+		for (keyCode = 0; keyCode < 128; keyCode++) {
+			KeyDiscriminant *discriminant = [[KeyDiscriminant alloc] init];
+			discriminant->modifierKeyState = modifierKeyStates[i];
 			discriminant->virtualKeyCode = keyCode;
 			
 			NSString *uchar = [self charForDiscriminant:discriminant];

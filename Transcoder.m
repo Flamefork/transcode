@@ -48,6 +48,8 @@
 
 - (NSString *)transcode:(NSString *)aString
 {
+	NSMutableString *result = [NSMutableString string];
+	
 	NSArray *layouts = [self createLayouts];
 	NSString *current = [self getCurrentLayoutID];
 	
@@ -65,9 +67,20 @@
 	Layout *currentLayout = [layouts objectAtIndex:currentIndex];
 	Layout *nextLayout = [layouts objectAtIndex:nextIndex];
 	
+	UniChar uchar;
+	CFStringRef str;
+	
+	int length = [aString length];
+	for (i=0; i < length; i++) {
+		uchar = [aString characterAtIndex:i];
+		NSString *s = [NSString stringWithCharacters:&uchar length:1];
+		KeyDiscriminant *kd = [currentLayout discriminantForChar:s];
+		result = [result stringByAppendingString:[nextLayout charForDiscriminant:kd]];
+	}
+	
 	[self setLayout:nextLayout->layoutID];
 	
-	return @"YO!";
+	return result;
 }
 
 - (void)callTranscode:(NSPasteboard *)pboard 
