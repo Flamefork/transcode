@@ -3,7 +3,7 @@
 //  Transcode
 //
 //  Created by flamefork on 26.08.08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
+//  Copyright 2008 Flamefork. All rights reserved.
 //
 
 #import "Layout.h"

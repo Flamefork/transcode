@@ -3,7 +3,7 @@
 //  Transcode
 //
 //  Created by flamefork on 22.08.08.
-//  Copyright __MyCompanyName__ 2008. All rights reserved.
+//  Copyright Flamefork 2008. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
