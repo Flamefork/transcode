@@ -13,12 +13,14 @@
 
 @interface Layout : NSObject
 {
+@public
+	NSString *layoutID;
+@private
 	NSMutableDictionary *descData;
 	UCKeyboardLayout *ucharData;
 }
 
-+ (NSDictionary *) createLayouts;
-- (id)initWithUchrData:(UCKeyboardLayout *) uchrData;
+- (id)initWithUchrData:(UCKeyboardLayout *) uchrData lid:(NSString *)lid;
 - (KeyDiscriminant *)discriminantForChar:(NSString *) uchar;
 - (NSString *)charForDiscriminant:(KeyDiscriminant *) discriminant;
 

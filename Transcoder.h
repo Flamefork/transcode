@@ -11,6 +11,8 @@
 
 @interface Transcoder : NSObject
 
+- (NSArray *) createLayouts;
+
 - (NSString *)transcode:(NSString *)aString;
 
 - (void)callTranscode:(NSPasteboard *)pboard 

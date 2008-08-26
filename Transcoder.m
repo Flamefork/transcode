@@ -11,9 +11,61 @@
 
 @implementation Transcoder
 
+- (NSString *) getCurrentLayoutID
+{
+	TISInputSourceRef isr = TISCopyCurrentKeyboardLayoutInputSource();
+	return (NSString*)TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyInputSourceID);
+}
+
+- (void) setLayout:(NSString *)layoutID
+{
+	NSDictionary *filter = [NSDictionary dictionaryWithObject:layoutID forKey:kTISPropertyInputSourceID];
+	NSArray *list = TISCreateInputSourceList(filter, false);
+	TISInputSourceRef isr = [list objectAtIndex:0];
+	TISSelectInputSource(isr);
+}
+
+- (NSArray *) createLayouts
+{
+	NSMutableArray *result = [NSMutableArray array];
+	
+	NSDictionary *filter = [NSDictionary dictionaryWithObject:kTISTypeKeyboardLayout forKey:kTISPropertyInputSourceType];
+	NSArray *list = TISCreateInputSourceList(filter, false);
+	
+	for (id *isr in list) {
+		NSString *isid = (NSString*)TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyInputSourceID);
+		
+		CFDataRef uchr = TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyUnicodeKeyLayoutData);
+		UCKeyboardLayout *uchrData = (UCKeyboardLayout*)CFDataGetBytePtr(uchr);
+		
+		Layout *layout = [[Layout alloc] initWithUchrData:uchrData lid:isid];
+		
+		[result addObject:layout];
+	}
+	
+	return result;
+}
+
 - (NSString *)transcode:(NSString *)aString
 {
-	[Layout createLayouts];
+	NSArray *layouts = [self createLayouts];
+	NSString *current = [self getCurrentLayoutID];
+	
+	int currentIndex = -1, i, c = [layouts count];
+	for (i = 0; i < c; i++) {
+		Layout *lay = [layouts objectAtIndex:i];
+		if (lay->layoutID == current) {
+			currentIndex = i;
+		}
+	}
+	int nextIndex = currentIndex + 1;
+	if (nextIndex >= c) {
+		nextIndex = 0;
+	}
+	Layout *currentLayout = [layouts objectAtIndex:currentIndex];
+	Layout *nextLayout = [layouts objectAtIndex:nextIndex];
+	
+	[self setLayout:nextLayout->layoutID];
 	
 	return @"YO!";
 }

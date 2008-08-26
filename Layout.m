@@ -10,32 +10,9 @@
 
 @implementation Layout
 
-+ (NSDictionary *) createLayouts
+- (id)initWithUchrData:(UCKeyboardLayout *) uchrData lid:(NSString *)lid
 {
-	NSMutableDictionary *result = [NSMutableDictionary dictionary];
-	
-	CFMutableDictionaryRef filter = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, NULL); 
-	CFDictionaryAddValue(filter, kTISPropertyInputSourceType, kTISTypeKeyboardLayout);
-	CFArrayRef list = TISCreateInputSourceList(filter, false);
-	
-	CFIndex i, c = CFArrayGetCount(list);
-	
-	for (i = 0; i < c; i++) {
-		TISInputSourceRef isr = (TISInputSourceRef) CFArrayGetValueAtIndex(list, i);
-		NSString *isid = (NSString*)TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyInputSourceID);
-		
-		CFDataRef uchr = TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyUnicodeKeyLayoutData);
-		UCKeyboardLayout *uchrData = (UCKeyboardLayout*)CFDataGetBytePtr(uchr);
-		
-		Layout *layout = [[Layout alloc] initWithUchrData:uchrData];
-		
-		[result setObject:layout forKey:isid];
-	}
-	
-	return result;
-}
-- (id)initWithUchrData:(UCKeyboardLayout *) uchrData
-{
+	layoutID = lid;
 	ucharData = uchrData;
 	descData = [NSMutableDictionary dictionary];
 	
