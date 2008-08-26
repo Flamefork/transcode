@@ -75,7 +75,11 @@
 		uchar = [aString characterAtIndex:i];
 		NSString *s = [NSString stringWithCharacters:&uchar length:1];
 		KeyDiscriminant *kd = [currentLayout discriminantForChar:s];
-		result = [result stringByAppendingString:[nextLayout charForDiscriminant:kd]];
+		if (kd) {
+			result = [result stringByAppendingString:[nextLayout charForDiscriminant:kd]];
+		} else {
+			result = [result stringByAppendingString:s];
+		}
 	}
 	
 	[self setLayout:nextLayout->layoutID];

@@ -30,7 +30,7 @@
 			<key>NSKeyEquivalent</key>
 			<dict>
 				<key>default</key>
-				<string>T</string>
+				<string>\</string>
 			</dict>
 			<key>NSMenuItem</key>
 			<dict>

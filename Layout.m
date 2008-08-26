@@ -16,7 +16,7 @@
 	ucharData = uchrData;
 	descData = [NSMutableDictionary dictionary];
 	
-	static UInt32 modifierKeyStates[] = {0, shiftKey, optionKey, controlKey, optionKey | shiftKey};
+	static UInt32 modifierKeyStates[] = {0, shiftKey, /*optionKey, controlKey, optionKey | shiftKey*/};
 	
     int i;
 	for (i = 0; i < (sizeof(modifierKeyStates) / sizeof(UInt32)); i++) {
