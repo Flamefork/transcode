@@ -15,39 +15,54 @@
 
 - (NSString *)transcode:(NSString *)aString
 {
-//	CharMap *eng = [[CharMap alloc] initWithString:@"abcdefg"];
-//	CharMap *rus = [[CharMap alloc] initWithString:@"абцдефг"];
-//
-//	NSString *newString = [aString mutableCopy];
-//	unsigned i = 0;
-//	unsigned length = [newString length];
-//	
-//	for (i = 0; i < length; i++) {
-//		
-//	}
-//	
-//	return newString;
+	[self getKeyboardLayouts];
 	
-	KeyboardLayoutRef currentLayout;
-    OSStatus err = KLGetCurrentKeyboardLayout( &currentLayout );
+	return @"YO!";
+}
+
+- (NSDictionary *) getKeyboardLayouts
+{
+	NSMutableDictionary *result = [NSMutableDictionary dictionary];
 	
-    SInt32		keyLayoutKind;
-    UInt32		deadKeyState;
-    UCKeyboardLayout	*uchrData;
+	CFMutableDictionaryRef filter = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, NULL, NULL); 
+	CFDictionaryAddValue(filter, kTISPropertyInputSourceType, kTISTypeKeyboardLayout);
+	CFArrayRef list = TISCreateInputSourceList(filter, false);
 	
-	err = KLGetKeyboardLayoutProperty( currentLayout, kKLKind, (const void **)&keyLayoutKind );
-	if (keyLayoutKind != kKLKCHRKind) {
-		err = KLGetKeyboardLayoutProperty( currentLayout, kKLuchrData, (const void **)&uchrData );
-		if (err !=  noErr) return nil;
-	} else {
-		return nil;
+	CFIndex i, c = CFArrayGetCount(list);
+	
+	for (i = 0; i < c; i++) {
+		TISInputSourceRef isr = (TISInputSourceRef) CFArrayGetValueAtIndex(list, i);
+		NSString *isid = (NSString*)TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyInputSourceID);
+		
+		CFDataRef uchr = TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyUnicodeKeyLayoutData);
+		UCKeyboardLayout *uchrData = (UCKeyboardLayout*)CFDataGetBytePtr(uchr);
+		
+		NSMutableArray *arr = [[NSMutableArray alloc] init];
+		
+		UniCharCount maxStringLength = 4, actualStringLength;
+		UniChar unicodeString[4];
+		UInt32 deadKeyState;
+		NSUInteger k;
+		for (k = 0; k < 127; k++) {
+			UCKeyTranslate(uchrData, k, kUCKeyActionDisplay, 0, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &deadKeyState, maxStringLength, &actualStringLength, unicodeString);
+			NSString *c = [NSString stringWithCharacters:unicodeString length:actualStringLength];
+			[arr insertObject:c atIndex:k];
+		}
+		
+		[result setObject:arr forKey:isid];
 	}
 	
-	UniCharCount maxStringLength = 4, actualStringLength;
-	UniChar unicodeString[4];
-	short keyCode = 500;
-	err = UCKeyTranslate( uchrData, keyCode, kUCKeyActionDisplay, 0, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &deadKeyState, maxStringLength, &actualStringLength, unicodeString );
-	return [NSString stringWithCharacters:unicodeString length:1];
+	for (NSString *k in result) {
+		NSLog(k);
+		NSArray *a = [result objectForKey:k];
+		NSUInteger k;
+		for (k = 0; k < 127; k++) {
+			NSLog([NSString stringWithFormat:@"%d", k]);
+			NSLog([a objectAtIndex:k]);
+		}
+	}
+	
+	return result;
 }
 
 - (void)callTranscode:(NSPasteboard *)pboard 

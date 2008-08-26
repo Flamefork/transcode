@@ -13,6 +13,8 @@
 
 - (NSString *)transcode:(NSString *)aString;
 
+- (NSDictionary *) getKeyboardLayouts;
+
 - (void)callTranscode:(NSPasteboard *)pboard 
 			 userData:(NSString *)userData 
 				error:(NSString **)error;
