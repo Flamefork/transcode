@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		290983270E5EF55D00965AA8 /* CharMap.m in Sources */ = {isa = PBXBuildFile; fileRef = 290983260E5EF55D00965AA8 /* CharMap.m */; };
+		291660090E62DB640004266B /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 291660080E62DB640004266B /* Carbon.framework */; };
+		291DE64B0E64362E0019A8EA /* Layout.m in Sources */ = {isa = PBXBuildFile; fileRef = 291DE64A0E64362E0019A8EA /* Layout.m */; };
+		294C75FA0E62B82B00F06BC9 /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 294C75F90E62B82B00F06BC9 /* InputMethodKit.framework */; };
 		2974D99C0E5ED5F600943C43 /* Transcoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2974D99B0E5ED5F600943C43 /* Transcoder.m */; };
 		2974D9DB0E5EDAD600943C43 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2974D9DA0E5EDAD600943C43 /* AppDelegate.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
@@ -20,8 +22,10 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
-		290983250E5EF55D00965AA8 /* CharMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CharMap.h; sourceTree = "<group>"; };
-		290983260E5EF55D00965AA8 /* CharMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CharMap.m; sourceTree = "<group>"; };
+		291660080E62DB640004266B /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		291DE6490E64362E0019A8EA /* Layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layout.h; sourceTree = "<group>"; };
+		291DE64A0E64362E0019A8EA /* Layout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Layout.m; sourceTree = "<group>"; };
+		294C75F90E62B82B00F06BC9 /* InputMethodKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = InputMethodKit.framework; path = /System/Library/Frameworks/InputMethodKit.framework; sourceTree = "<absolute>"; };
 		2974D99A0E5ED5F600943C43 /* Transcoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Transcoder.h; sourceTree = "<group>"; };
 		2974D99B0E5ED5F600943C43 /* Transcoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Transcoder.m; sourceTree = "<group>"; };
 		2974D9D90E5EDAD600943C43 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -41,6 +45,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				294C75FA0E62B82B00F06BC9 /* InputMethodKit.framework in Frameworks */,
+				291660090E62DB640004266B /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -54,8 +60,8 @@
 				2974D99B0E5ED5F600943C43 /* Transcoder.m */,
 				2974D9D90E5EDAD600943C43 /* AppDelegate.h */,
 				2974D9DA0E5EDAD600943C43 /* AppDelegate.m */,
-				290983250E5EF55D00965AA8 /* CharMap.h */,
-				290983260E5EF55D00965AA8 /* CharMap.m */,
+				291DE6490E64362E0019A8EA /* Layout.h */,
+				291DE64A0E64362E0019A8EA /* Layout.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -63,6 +69,8 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				291660080E62DB640004266B /* Carbon.framework */,
+				294C75F90E62B82B00F06BC9 /* InputMethodKit.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -184,7 +192,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				2974D99C0E5ED5F600943C43 /* Transcoder.m in Sources */,
 				2974D9DB0E5EDAD600943C43 /* AppDelegate.m in Sources */,
-				290983270E5EF55D00965AA8 /* CharMap.m in Sources */,
+				291DE64B0E64362E0019A8EA /* Layout.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
