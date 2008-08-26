@@ -6,6 +6,8 @@
 //  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
+#import <Carbon/Carbon.h>
+
 #import "CharMap.h"
 #import "Transcoder.h"
 
@@ -13,18 +15,39 @@
 
 - (NSString *)transcode:(NSString *)aString
 {
-	CharMap *eng = [[CharMap alloc] initWithString:@"abcdefg"];
-	CharMap *rus = [[CharMap alloc] initWithString:@"абцдефг"];
+//	CharMap *eng = [[CharMap alloc] initWithString:@"abcdefg"];
+//	CharMap *rus = [[CharMap alloc] initWithString:@"абцдефг"];
+//
+//	NSString *newString = [aString mutableCopy];
+//	unsigned i = 0;
+//	unsigned length = [newString length];
+//	
+//	for (i = 0; i < length; i++) {
+//		
+//	}
+//	
+//	return newString;
 	
-	NSString *newString = [aString mutableCopy];
-	unsigned i = 0;
-	unsigned length = [newString length];
+	KeyboardLayoutRef currentLayout;
+    OSStatus err = KLGetCurrentKeyboardLayout( &currentLayout );
 	
-	for (i = 0; i < length; i++) {
-		
+    SInt32		keyLayoutKind;
+    UInt32		deadKeyState;
+    UCKeyboardLayout	*uchrData;
+	
+	err = KLGetKeyboardLayoutProperty( currentLayout, kKLKind, (const void **)&keyLayoutKind );
+	if (keyLayoutKind != kKLKCHRKind) {
+		err = KLGetKeyboardLayoutProperty( currentLayout, kKLuchrData, (const void **)&uchrData );
+		if (err !=  noErr) return nil;
+	} else {
+		return nil;
 	}
 	
-	return newString;
+	UniCharCount maxStringLength = 4, actualStringLength;
+	UniChar unicodeString[4];
+	short keyCode = 500;
+	err = UCKeyTranslate( uchrData, keyCode, kUCKeyActionDisplay, 0, LMGetKbdType(), kUCKeyTranslateNoDeadKeysBit, &deadKeyState, maxStringLength, &actualStringLength, unicodeString );
+	return [NSString stringWithCharacters:unicodeString length:1];
 }
 
 - (void)callTranscode:(NSPasteboard *)pboard 
