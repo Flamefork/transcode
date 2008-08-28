@@ -23,13 +23,11 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 	AXUIElementCopyAttributeValue(application, kAXFocusedUIElementAttribute, (CFTypeRef *)&uiElement);
 	if (!uiElement) return noErr;
 	
-	AXUIElementCopyAttributeValue(uiElement, kAXRoleAttribute, (CFTypeRef *)&s);
-	NSLog(@"kAXRoleAttribute = %s", [s UTF8String]);
-	
 	AXUIElementCopyAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef *)&s);
-	NSLog(@"kAXSelectedTextAttribute = %s", [s UTF8String]);
+	if (!s) return noErr;
 	
-	AXUIElementSetAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef)[transcoder transcode:s]);
+	s = [transcoder transcode:s];
+	AXUIElementSetAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef)s);
 	
 //	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )56, true);
 //	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )6, true);

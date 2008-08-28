@@ -13,8 +13,12 @@
 - (id)initWithUchrData:(UCKeyboardLayout *) uchrData lid:(NSString *)lid
 {
 	layoutID = lid;
-	ucharData = uchrData;
+	[layoutID retain];
+	
 	descData = [NSMutableDictionary dictionary];
+	[descData retain];
+	
+	ucharData = uchrData;
 	
 	static UInt32 modifierKeyStates[] = {0, shiftKey, /*optionKey, controlKey, optionKey | shiftKey*/};
 	

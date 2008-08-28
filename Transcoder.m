@@ -28,6 +28,7 @@
 - (void) createLayouts
 {
 	layouts = [NSMutableArray array];
+	[layouts retain];
 	
 	NSDictionary *filter = [NSDictionary dictionaryWithObject:kTISTypeKeyboardLayout forKey:kTISPropertyInputSourceType];
 	NSArray *list = TISCreateInputSourceList(filter, false);
@@ -51,6 +52,7 @@
 	NSString *current = [self getCurrentLayoutID];
 	
 	int currentIndex = -1, i, c = [layouts count];
+	
 	for (i = 0; i < c; i++) {
 		Layout *lay = [layouts objectAtIndex:i];
 		if (lay->layoutID == current) {
