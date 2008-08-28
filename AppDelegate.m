@@ -34,6 +34,9 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 //	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )6, false);
 //	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )56, false);
 	
+//	key code  54 = [Command]
+//	key code  56 = [Shift]
+	
 	return noErr;
 }
 
