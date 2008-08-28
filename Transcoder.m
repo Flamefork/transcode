@@ -25,9 +25,9 @@
 	TISSelectInputSource(isr);
 }
 
-- (NSArray *) createLayouts
+- (void) createLayouts
 {
-	NSMutableArray *result = [NSMutableArray array];
+	layouts = [NSMutableArray array];
 	
 	NSDictionary *filter = [NSDictionary dictionaryWithObject:kTISTypeKeyboardLayout forKey:kTISPropertyInputSourceType];
 	NSArray *list = TISCreateInputSourceList(filter, false);
@@ -40,17 +40,14 @@
 		
 		Layout *layout = [[Layout alloc] initWithUchrData:uchrData lid:isid];
 		
-		[result addObject:layout];
+		[layouts addObject:layout];
 	}
-	
-	return result;
 }
 
 - (NSString *)transcode:(NSString *)aString
 {
 	NSMutableString *result = [NSMutableString string];
 	
-	NSArray *layouts = [self createLayouts];
 	NSString *current = [self getCurrentLayoutID];
 	
 	int currentIndex = -1, i, c = [layouts count];
@@ -85,34 +82,6 @@
 	[self setLayout:nextLayout->layoutID];
 	
 	return result;
-}
-
-- (void)callTranscode:(NSPasteboard *)pboard 
-			 userData:(NSString *)userData 
-				error:(NSString **)error 
-{ 
-	NSString *pboardString; 
-	NSString *newString; 
-	NSArray *types; 
-	types = [pboard types]; 
-	if (![types containsObject:NSStringPboardType]) { 
-		*error = @"Error: couldn't transcode text.";
-		return; 
-	} 
-	pboardString = [pboard stringForType:NSStringPboardType]; 
-	if (!pboardString) { 
-		*error = @"Error: couldn't transcode text.";
-		return; 
-	} 
-	newString = [self transcode:pboardString]; 
-	if (!newString) { 
-		*error = @"Error: couldn't transcode text.";
-		return; 
-	} 
-	types = [NSArray arrayWithObject:NSStringPboardType]; 
-	[pboard declareTypes:types owner:nil]; 
-	[pboard setString:newString forType:NSStringPboardType]; 
-	return; 
 }
 
 @end

@@ -10,8 +10,11 @@
 
 
 @interface Transcoder : NSObject
+{
+	NSMutableArray *layouts;
+}
 
-- (NSArray *) createLayouts;
+- (void) createLayouts;
 
 - (NSString *)transcode:(NSString *)aString;
 
