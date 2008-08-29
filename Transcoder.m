@@ -13,16 +13,7 @@
 
 - (NSString *) getCurrentLayoutID
 {
-	TISInputSourceRef isr = TISCopyCurrentKeyboardLayoutInputSource();
-	return (NSString*)TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyInputSourceID);
-}
-
-- (void) setLayout:(NSString *)layoutID
-{
-	NSDictionary *filter = [NSDictionary dictionaryWithObject:layoutID forKey:kTISPropertyInputSourceID];
-	NSArray *list = TISCreateInputSourceList(filter, false);
-	TISInputSourceRef isr = [list objectAtIndex:0];
-	TISSelectInputSource(isr);
+	return (NSString*)TISGetInputSourceProperty(TISCopyCurrentKeyboardLayoutInputSource(), kTISPropertyInputSourceID);
 }
 
 - (void) createLayouts
@@ -30,8 +21,8 @@
 	layouts = [NSMutableArray array];
 	[layouts retain];
 	
-	NSDictionary *filter = [NSDictionary dictionaryWithObject:kTISTypeKeyboardLayout forKey:kTISPropertyInputSourceType];
-	NSArray *list = TISCreateInputSourceList(filter, false);
+	NSDictionary *filter = [NSDictionary dictionaryWithObject:(NSString *)kTISTypeKeyboardLayout forKey:(NSString *)kTISPropertyInputSourceType];
+	NSArray *list = (NSArray *)TISCreateInputSourceList((CFDictionaryRef)filter, false);
 	
 	for (id *isr in list) {
 		NSString *isid = (NSString*)TISGetInputSourceProperty((TISInputSourceRef)isr, kTISPropertyInputSourceID);
@@ -45,45 +36,45 @@
 	}
 }
 
-- (NSString *)transcode:(NSString *)aString
+- (NSArray *)transcode:(NSString *)aString
 {
-	NSMutableString *result = [NSMutableString string];
+	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[aString length]];
 	
-	NSString *current = [self getCurrentLayoutID];
+	int currentIndex = [layouts indexOfObject:[self getCurrentLayoutID]];
 	
-	int currentIndex = -1, i, c = [layouts count];
-	
-	for (i = 0; i < c; i++) {
-		Layout *lay = [layouts objectAtIndex:i];
-		if (lay->layoutID == current) {
-			currentIndex = i;
-		}
-	}
-	int nextIndex = currentIndex + 1;
-	if (nextIndex >= c) {
-		nextIndex = 0;
-	}
 	Layout *currentLayout = [layouts objectAtIndex:currentIndex];
-	Layout *nextLayout = [layouts objectAtIndex:nextIndex];
 	
 	UniChar uchar;
-	CFStringRef str;
 	
-	int length = [aString length];
-	for (i=0; i < length; i++) {
+	int i, length = [aString length];
+	
+	for (i = 0; i < length; i++) {
 		uchar = [aString characterAtIndex:i];
 		NSString *s = [NSString stringWithCharacters:&uchar length:1];
 		KeyDiscriminant *kd = [currentLayout discriminantForChar:s];
-		if (kd) {
-			result = [result stringByAppendingString:[nextLayout charForDiscriminant:kd]];
-		} else {
-			result = [result stringByAppendingString:s];
-		}
+		
+		// Do not forward if we're in really wrong ;) layout
+		if (!kd) return result;
+		
+		[result addObject:kd];
 	}
 	
-	[self setLayout:nextLayout->layoutID];
-	
 	return result;
+}
+
+- (void) switchLayout
+{
+	int currentIndex = [layouts indexOfObject:[self getCurrentLayoutID]];
+	
+	int nextIndex = currentIndex + 1;
+	if (nextIndex >= [layouts count]) nextIndex = 0;
+	
+	Layout *nextLayout = [layouts objectAtIndex:nextIndex];
+	
+	NSDictionary *filter = [NSDictionary dictionaryWithObject:nextLayout->layoutID forKey:(NSString *)kTISPropertyInputSourceID];
+	CFArrayRef list = TISCreateInputSourceList((CFDictionaryRef)filter, false);
+	TISSelectInputSource((TISInputSourceRef)CFArrayGetValueAtIndex(list, 0));
+	
 }
 
 @end

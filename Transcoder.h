@@ -16,10 +16,8 @@
 
 - (void) createLayouts;
 
-- (NSString *)transcode:(NSString *)aString;
+- (NSArray *)transcode:(NSString *)aString;
 
-- (void)callTranscode:(NSPasteboard *)pboard 
-			 userData:(NSString *)userData 
-				error:(NSString **)error;
+- (void) switchLayout;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "Transcoder.h"
+#import "KeyDiscriminant.h"
 
 OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData)
 {
@@ -18,24 +19,42 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 	AXUIElementRef uiElement;
 	
 	AXUIElementCopyAttributeValue(AXUIElementCreateSystemWide(), kAXFocusedApplicationAttribute, (CFTypeRef *)&application);
-	if (!application) return noErr;
+	NSLog(@"1");
+	if (application) {
+		NSLog(@"2");
+		AXUIElementCopyAttributeValue(application, kAXFocusedUIElementAttribute, (CFTypeRef *)&uiElement);
+		if (uiElement) {
+			NSLog(@"3");
+			AXUIElementCopyAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef *)&s);
+		} else {
+			NSLog(@"4");
+			AXUIElementCopyAttributeValue(application, kAXFocusedWindowAttribute, (CFTypeRef *)&uiElement);
+			if (uiElement) {
+				NSLog(@"5");
+				AXUIElementCopyAttributeValue(uiElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&uiElement);
+				if (uiElement) {
+					NSLog(@"6");
+					//AXUIElementCopyAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef *)&s);
+					AXUIElementCopyAttributeValue(uiElement, kAXRoleAttribute, (CFTypeRef *)&s);
+				}
+			}
+		}
+	}
+	NSLog(s);
 	
-	AXUIElementCopyAttributeValue(application, kAXFocusedUIElementAttribute, (CFTypeRef *)&uiElement);
-	if (!uiElement) return noErr;
+	NSArray *keyDiscriminants;
+	if (s) {
+		keyDiscriminants = [transcoder transcode:s];
+	}
 	
-	AXUIElementCopyAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef *)&s);
-	if (!s) return noErr;
+	[transcoder switchLayout];
 	
-	s = [transcoder transcode:s];
-	AXUIElementSetAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef)s);
-	
-//	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )56, true);
-//	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )6, true);
-//	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )6, false);
-//	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )56, false);
-	
-//	key code  54 = [Command]
-//	key code  56 = [Shift]
+	if (s) {
+		KeyDiscriminant *kd;
+		for (kd in keyDiscriminants) {
+			[kd sendToApplication:application];
+		}
+	}
 	
 	return noErr;
 }

@@ -9,6 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
+#import "KeyDiscriminant.h"
+
 @class KeyDiscriminant;
 
 @interface Layout : NSObject
@@ -20,16 +22,11 @@
 	UCKeyboardLayout *ucharData;
 }
 
+- (BOOL)isEqual:(id)anObject;
+- (NSUInteger)hash;
+
 - (id)initWithUchrData:(UCKeyboardLayout *) uchrData lid:(NSString *)lid;
 - (KeyDiscriminant *)discriminantForChar:(NSString *) uchar;
 - (NSString *)charForDiscriminant:(KeyDiscriminant *) discriminant;
 
-@end
-
-@interface KeyDiscriminant : NSObject
-{
-@public
-	UInt16 virtualKeyCode;
-	UInt32 modifierKeyState;
-}
 @end

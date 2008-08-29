@@ -10,6 +10,24 @@
 
 @implementation Layout
 
+- (BOOL)isEqual:(id)anObject
+{
+	// Dirty hack for search
+	if ([anObject isKindOfClass:[NSString class]]) {
+		return [layoutID isEqual:anObject];
+	}
+	// Common
+	if ([anObject isKindOfClass:[Layout class]]) {
+		Layout *lay = (Layout *)anObject;
+		return [layoutID isEqual:lay->layoutID];
+	}
+	return NO;
+}
+- (NSUInteger)hash
+{
+	return [layoutID hash];
+}
+
 - (id)initWithUchrData:(UCKeyboardLayout *) uchrData lid:(NSString *)lid
 {
 	layoutID = lid;
@@ -54,7 +72,4 @@
 	return [NSString stringWithCharacters:unicodeString length:actualStringLength];
 }
 
-@end
-
-@implementation KeyDiscriminant
 @end
