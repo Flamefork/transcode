@@ -120,6 +120,8 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+	[self checkAXAPIEnabled];
+	
 	transcoder = [[Transcoder alloc] init];
 	[transcoder retain];
 	[transcoder createLayouts];
@@ -141,6 +143,20 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 	
 	[NSApp setServicesProvider:self];
 	NSUpdateDynamicServices();
+}
+
+- (void)checkAXAPIEnabled
+{
+	if(!AXAPIEnabled())
+	{
+		int result = NSRunAlertPanel(@"Enable Access for Assistive Devices." , @"To continue, please enable access for assistive devices in the Universal Access pane in System Preferences. Then, relaunch the application." , @"Open System Preferences", @"Quit", nil);
+		
+		if(result == NSAlertDefaultReturn) {
+			[[NSWorkspace sharedWorkspace]openFile:@"/System/Library/PreferencePanes/UniversalAccessPref.prefPane"];
+		}
+		
+		[NSApp terminate:nil];
+	}
 }
 
 - (void)callTranscode:(NSPasteboard *)pboard 

@@ -16,4 +16,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 
+- (void)checkAXAPIEnabled;
+
 @end
