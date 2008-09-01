@@ -3,7 +3,7 @@
 //  Transcode
 //
 //  Created by flamefork on 29.08.08.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
+//  Copyright 2008 Flamefork. All rights reserved.
 //
 
 #import "KeyDiscriminant.h"
@@ -12,19 +12,32 @@
 
 - (void)sendToApplication:(AXUIElementRef)application
 {
-	//	key code  54 = [Command]
-	//	key code  56 = [Shift]
-	
-	if (self->modifierKeyState == shiftKey) {
+	if (self->modifierKeyState & shiftKey) {
 		AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )56, true);
 	}
+	
+	if (self->modifierKeyState & controlKey) {
+		AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )59, true);
+	}
+	
+	if (self->modifierKeyState & optionKey) {
+		AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )58, true);
+	}
+	
 	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )self->virtualKeyCode, true);
 	AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )self->virtualKeyCode, false);
 	
-	if (self->modifierKeyState == shiftKey) {
-		AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )56, false);
+	if (self->modifierKeyState & optionKey) {
+		AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )58, false);
 	}
 	
+	if (self->modifierKeyState & controlKey) {
+		AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )59, false);
+	}
+	
+	if (self->modifierKeyState & shiftKey) {
+		AXUIElementPostKeyboardEvent(application, 0, (CGKeyCode )56, false);
+	}
 }
 
 @end

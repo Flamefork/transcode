@@ -9,52 +9,107 @@
 #import "AppDelegate.h"
 #import "KeyDiscriminant.h"
 
+AXUIElementRef AXUIElementGetChild(AXUIElementRef element, NSUInteger atIndex, bool notEmpty, NSString *withTitle)
+{
+	NSArray *children;
+	AXUIElementCopyAttributeValue(element, kAXChildrenAttribute, (CFTypeRef *)&children);
+	
+	if (!children) return NULL;
+	
+	NSUInteger i, count = [children count];
+	
+	if (!count) return NULL;
+	
+	if (!notEmpty && !withTitle) {
+		return (AXUIElementRef)[children objectAtIndex:atIndex];
+	}
+	
+	for (i = 0; i < count; i++) {
+		AXUIElementRef result = (AXUIElementRef)[children objectAtIndex:i];
+		if (notEmpty) {
+			NSArray *subchildren;
+			AXUIElementCopyAttributeValue(result, kAXChildrenAttribute, (CFTypeRef *)&subchildren);
+			if (!subchildren || ![subchildren count]) continue;
+		}
+		if (withTitle) {
+			NSString *s;
+			AXUIElementCopyAttributeValue(result, kAXTitleAttribute, (CFTypeRef *)&s);
+			if (!s || ![s isEqualToString:withTitle]) continue;
+		}
+		return result;
+	}
+	
+	return NULL;
+}
+
+bool useService(AXUIElementRef application, Transcoder *transcoder) {
+	AXUIElementRef uiElement;
+	
+	AXUIElementCopyAttributeValue(application, kAXMenuBarAttribute, (CFTypeRef *)&uiElement); // Menu bar
+	if (!uiElement) return FALSE;
+	
+	uiElement = AXUIElementGetChild(uiElement, 1, FALSE, nil); // Application menu bar item
+	if (!uiElement) return FALSE;
+	
+	uiElement = AXUIElementGetChild(uiElement, 0, FALSE, nil); // Application menu
+	if (!uiElement) return FALSE;
+	
+	uiElement = AXUIElementGetChild(uiElement, 0, TRUE, nil); // Services menu item
+	if (!uiElement) return FALSE;
+	
+	uiElement = AXUIElementGetChild(uiElement, 0, FALSE, nil); // Services menu
+	if (!uiElement) return FALSE;
+	
+	uiElement = AXUIElementGetChild(uiElement, 0, FALSE, @"Transcode"); // Transcode menu item
+	if (!uiElement) return FALSE;
+	
+	AXUIElementPerformAction(uiElement, kAXPressAction); // At last!!!
+	
+	return TRUE;
+}
+
+bool useKeyboardEvents(AXUIElementRef application, Transcoder *transcoder) {
+	AXUIElementRef uiElement;
+	NSString *s;
+	
+	AXUIElementCopyAttributeValue(application, kAXFocusedUIElementAttribute, (CFTypeRef *)&uiElement);
+	if (!uiElement) return FALSE;
+	
+	AXUIElementCopyAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef *)&s);
+	if (!s) return FALSE;
+	
+	NSArray *keyDiscriminants;
+	keyDiscriminants = [transcoder decode:s];
+	
+	[transcoder switchLayout];
+	
+	KeyDiscriminant *kd;
+	for (kd in keyDiscriminants) {
+		[kd sendToApplication:application];
+	}
+	
+	return TRUE;
+}
+
+
 OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData)
 {
 	Transcoder *transcoder = (Transcoder *)userData;
 	
-	NSString *s;
 	AXUIElementRef application;
-	AXUIElementRef uiElement;
 	
 	AXUIElementCopyAttributeValue(AXUIElementCreateSystemWide(), kAXFocusedApplicationAttribute, (CFTypeRef *)&application);
-	NSLog(@"1");
 	if (application) {
-		NSLog(@"2");
-		AXUIElementCopyAttributeValue(application, kAXFocusedUIElementAttribute, (CFTypeRef *)&uiElement);
-		if (uiElement) {
-			NSLog(@"3");
-			AXUIElementCopyAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef *)&s);
-		} else {
-			NSLog(@"4");
-			AXUIElementCopyAttributeValue(application, kAXFocusedWindowAttribute, (CFTypeRef *)&uiElement);
-			if (uiElement) {
-				NSLog(@"5");
-				AXUIElementCopyAttributeValue(uiElement, kAXFocusedUIElementAttribute, (CFTypeRef *)&uiElement);
-				if (uiElement) {
-					NSLog(@"6");
-					//AXUIElementCopyAttributeValue(uiElement, kAXSelectedTextAttribute, (CFTypeRef *)&s);
-					AXUIElementCopyAttributeValue(uiElement, kAXRoleAttribute, (CFTypeRef *)&s);
-				}
-			}
+		if(useService(application, transcoder)) {
+			return noErr;
+		}
+		
+		if (useKeyboardEvents(application, transcoder)) {
+			return noErr;
 		}
 	}
-	NSLog(s);
-	
-	NSArray *keyDiscriminants;
-	if (s) {
-		keyDiscriminants = [transcoder decode:s];
-	}
-	
+	// If nothing helps - just switch this f***ing layout
 	[transcoder switchLayout];
-	
-	if (s) {
-		KeyDiscriminant *kd;
-		for (kd in keyDiscriminants) {
-			[kd sendToApplication:application];
-		}
-	}
-	
 	return noErr;
 }
 
