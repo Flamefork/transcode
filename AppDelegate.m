@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "Transcoder.h"
 #import "KeyDiscriminant.h"
 
 OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void *userData)
@@ -44,7 +43,7 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 	
 	NSArray *keyDiscriminants;
 	if (s) {
-		keyDiscriminants = [transcoder transcode:s];
+		keyDiscriminants = [transcoder decode:s];
 	}
 	
 	[transcoder switchLayout];
@@ -62,8 +61,8 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-	Transcoder *transcoder;
 	transcoder = [[Transcoder alloc] init];
+	[transcoder retain];
 	[transcoder createLayouts];
 	
 	EventTypeSpec eventType;
@@ -80,6 +79,42 @@ OSStatus hotkeyHandler(EventHandlerCallRef nextHandler, EventRef theEvent, void 
 	
 	InstallApplicationEventHandler(handlerUPP, 1, &eventType, (void *)transcoder, NULL);
 	RegisterEventHotKey(49, cmdKey, hotkeyId, GetApplicationEventTarget(), 0, &hotkeyRef);
+	
+	[NSApp setServicesProvider:self];
+	NSUpdateDynamicServices();
+}
+
+- (void)callTranscode:(NSPasteboard *)pboard 
+			 userData:(NSString *)userData 
+				error:(NSString **)error 
+{ 
+	NSString *pboardString;
+	NSString *newString;
+	NSArray *types;
+	types = [pboard types];
+	if (![types containsObject:NSStringPboardType]) {
+		*error = @"Error: couldn't transcode text.";
+		return;
+	}
+	pboardString = [pboard stringForType:NSStringPboardType];
+	if (!pboardString) {
+		*error = @"Error: couldn't transcode text.";
+		return;
+	}
+	
+	NSArray *decoded = [transcoder decode:pboardString];
+	
+	[transcoder switchLayout];
+	newString = [transcoder encode:decoded];
+	
+	if (!newString) {
+		*error = @"Error: couldn't transcode text.";
+		return;
+	}
+	types = [NSArray arrayWithObject:NSStringPboardType];
+	[pboard declareTypes:types owner:nil];
+	[pboard setString:newString forType:NSStringPboardType];
+	return;
 }
 
 @end

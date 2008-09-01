@@ -16,7 +16,9 @@
 
 - (void) createLayouts;
 
-- (NSArray *)transcode:(NSString *)aString;
+- (NSArray *)decode:(NSString *)aString;
+
+- (NSString *)encode:(NSArray *)keyDiscriminants;
 
 - (void) switchLayout;
 

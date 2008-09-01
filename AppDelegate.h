@@ -6,10 +6,13 @@
 //  Copyright 2008 Flamefork. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
-
+#import "Transcoder.h"
 
 @interface AppDelegate : NSObject
+{
+@public
+	Transcoder *transcoder;
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 

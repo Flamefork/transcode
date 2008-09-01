@@ -36,7 +36,7 @@
 	}
 }
 
-- (NSArray *)transcode:(NSString *)aString
+- (NSArray *)decode:(NSString *)aString
 {
 	NSMutableArray *result = [NSMutableArray arrayWithCapacity:[aString length]];
 	
@@ -59,6 +59,20 @@
 		[result addObject:kd];
 	}
 	
+	return result;
+}
+
+- (NSString *)encode:(NSArray *)keyDiscriminants
+{
+	NSMutableString *result = [NSMutableString stringWithCapacity:[keyDiscriminants count]];
+	
+	int currentIndex = [layouts indexOfObject:[self getCurrentLayoutID]];
+	Layout *currentLayout = [layouts objectAtIndex:currentIndex];
+	
+	KeyDiscriminant *kd;
+	for (kd in keyDiscriminants) {
+		[result appendString:[currentLayout charForDiscriminant:kd]];
+	}
 	return result;
 }
 
