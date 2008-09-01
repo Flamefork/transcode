@@ -44,6 +44,7 @@ AXUIElementRef AXUIElementGetChild(AXUIElementRef element, NSUInteger atIndex, b
 
 bool useService(AXUIElementRef application, Transcoder *transcoder) {
 	AXUIElementRef uiElement;
+	CFBooleanRef boolValue;
 	
 	AXUIElementCopyAttributeValue(application, kAXMenuBarAttribute, (CFTypeRef *)&uiElement); // Menu bar
 	if (!uiElement) return FALSE;
@@ -62,6 +63,9 @@ bool useService(AXUIElementRef application, Transcoder *transcoder) {
 	
 	uiElement = AXUIElementGetChild(uiElement, 0, FALSE, @"Transcode"); // Transcode menu item
 	if (!uiElement) return FALSE;
+	
+	AXUIElementCopyAttributeValue(uiElement, kAXEnabledAttribute, (CFTypeRef *)&boolValue); // Is Transcode action enabled?
+	if (!CFBooleanGetValue(boolValue)) return FALSE;
 	
 	AXUIElementPerformAction(uiElement, kAXPressAction); // At last!!!
 	
