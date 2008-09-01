@@ -12,6 +12,7 @@
 		294C75FA0E62B82B00F06BC9 /* InputMethodKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 294C75F90E62B82B00F06BC9 /* InputMethodKit.framework */; };
 		2974D99C0E5ED5F600943C43 /* Transcoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2974D99B0E5ED5F600943C43 /* Transcoder.m */; };
 		2974D9DB0E5EDAD600943C43 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2974D9DA0E5EDAD600943C43 /* AppDelegate.m */; };
+		29ABB6770E67CB7A004B0460 /* KeyDiscriminant.m in Sources */ = {isa = PBXBuildFile; fileRef = 29ABB6760E67CB7A004B0460 /* KeyDiscriminant.m */; };
 		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
@@ -30,6 +31,8 @@
 		2974D99B0E5ED5F600943C43 /* Transcoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Transcoder.m; sourceTree = "<group>"; };
 		2974D9D90E5EDAD600943C43 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		2974D9DA0E5EDAD600943C43 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		29ABB6750E67CB7A004B0460 /* KeyDiscriminant.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeyDiscriminant.h; sourceTree = "<group>"; };
+		29ABB6760E67CB7A004B0460 /* KeyDiscriminant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeyDiscriminant.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
@@ -62,6 +65,8 @@
 				2974D9DA0E5EDAD600943C43 /* AppDelegate.m */,
 				291DE6490E64362E0019A8EA /* Layout.h */,
 				291DE64A0E64362E0019A8EA /* Layout.m */,
+				29ABB6750E67CB7A004B0460 /* KeyDiscriminant.h */,
+				29ABB6760E67CB7A004B0460 /* KeyDiscriminant.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -193,6 +198,7 @@
 				2974D99C0E5ED5F600943C43 /* Transcoder.m in Sources */,
 				2974D9DB0E5EDAD600943C43 /* AppDelegate.m in Sources */,
 				291DE64B0E64362E0019A8EA /* Layout.m in Sources */,
+				29ABB6770E67CB7A004B0460 /* KeyDiscriminant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +227,7 @@
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -264,12 +271,6 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-					ppc64,
-					x86_64,
-				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
